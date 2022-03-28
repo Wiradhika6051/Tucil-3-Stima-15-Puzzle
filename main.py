@@ -1,22 +1,4 @@
-from matplotlib.pyplot import get
-
-
-def cetakMatrix(matrix):
-    #mencetak matriks awal
-    for i in range(16):
-        print(matrix[i],end=" ")
-        if(i==3 or i==7 or i==11):
-            print()
-    print()
-
-def KURANG(list,i):
-    #menghitung jumlah nilai di depan posisi nomor i yang nilainya lebih kecil dari i
-    count = 0
-    start_idx = list.index(i)
-    for n in range(start_idx+1,16):
-        if(list[n]<i and list[n]!=0):
-            count += 1
-    return count
+from TSP15Puzzle import TSP15Puzzle
 
 if __name__ == "__main__":
     matrix_awal = input("Masukkan matriks(tulis 16 untuk sel kosong): ").strip().split(" ")
@@ -35,20 +17,21 @@ if __name__ == "__main__":
     except Exception:
         print("Semua elemen harus unik!")
     else:
+        puzzleSolver = TSP15Puzzle(matrix_awal)
         #lanjutkan program
         print("\nMatrix awal:")
-        cetakMatrix(matrix_awal)
+        puzzleSolver.cetakMatrix(matrix_awal)
         #menampilkan nilai kurang i masing masing indeks
         print("\nNilai fungsi KURANG(i) untuk setiap i yang bukan ubin kosong:")
         status_number = 0
         for i in range(1,16):
-            kurang_number = KURANG(matrix_awal,i)
+            kurang_number = puzzleSolver.KURANG(i)
             print("KURANG(%d) =  %d" % (i, kurang_number))
             status_number += kurang_number
         print()
         #menampilkan jumlah nilai status reachable
         get_1_position = [ 1, 3, 4, 6, 9, 11, 12, 14 ] #jika kotak kosong berada di indeks ini, maka nilai status_number += 1
-        status_number += KURANG(matrix_awal,16)
+        status_number += puzzleSolver.KURANG(16)
         if(matrix_awal.index(16) in get_1_position):
             status_number += 1
         print("Nilai dari nilai status reachable(sigma(i)+X):",status_number)
@@ -56,4 +39,16 @@ if __name__ == "__main__":
         if(status_number % 2 != 0):#kalau ganjil maka tidak reachable
             print("\nPersoalan tidak bisa diselesaikan!")
         else:
-            print("aman")
+            #menyelesaikan puzzle
+            jumlah_simpul = puzzleSolver.solve()
+
+            # TODO
+            # dummy
+            jumlah_simpul = 0
+            #tampilkan urutan langkah
+
+            #menampilkan waktu eksekusi program
+            time_elapsed = puzzleSolver.getElapsedTime()
+            print("\nWaktu eksekusi program: %s ms" % (time_elapsed))
+            #menampilkan jumlah simpul yang dibangkitkan
+            print("\nJumlah simpul yang dibangkitkan:",jumlah_simpul)
