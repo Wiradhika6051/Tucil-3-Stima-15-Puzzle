@@ -1,3 +1,6 @@
+from matplotlib.pyplot import get
+
+
 def cetakMatrix(matrix):
     #mencetak matriks awal
     for i in range(16):
@@ -33,8 +36,19 @@ if __name__ == "__main__":
         print("Semua elemen harus unik!")
     else:
         #lanjutkan program
-        print("Matrix awal:")
+        print("\nMatrix awal:")
         cetakMatrix(matrix_awal)
         #menampilkan nilai kurang i masing masing indeks
+        print("Nilai fungsi KURANG(i) untuk setiap i yang bukan ubin kosong:")
+        status_number = 0
         for i in range(1,16):
-            print("KURANG(%d) =  %d" % (i,KURANG(matrix_awal,i)) )
+            kurang_number = KURANG(matrix_awal,i)
+            print("KURANG(%d) =  %d" % (i, kurang_number))
+            status_number += kurang_number
+        print()
+        #menampilkan jumlah nilai status reachable
+        get_1_position = [ 1, 3, 4, 6, 9, 11, 12, 14 ] #jika kotak kosong berada di indeks ini, maka nilai status_number += 1
+        status_number += KURANG(matrix_awal,16)
+        if(matrix_awal.index(16) in get_1_position):
+            status_number += 1
+        print("Nilai dari nilai status reachable(sigma(i)+X):",status_number)
