@@ -1,3 +1,9 @@
+def cetakMatrix(matrix):
+    for i in range(16):
+        print(matrix[i],end=" ")
+        if(i==3 or i==7 or i==11):
+            print()
+
 if __name__ == "__main__":
     matrix_awal = input("Masukkan matriks(tulis 0 untuk sel kosong): ").strip().split(" ")
     #saring masukan
@@ -16,4 +22,5 @@ if __name__ == "__main__":
         print("Semua elemen harus unik!")
     else:
         #lanjutkan program
-        pass
+        print("Matrix awal:")
+        cetakMatrix(matrix_awal)
