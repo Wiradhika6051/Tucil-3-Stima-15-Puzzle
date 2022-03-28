@@ -39,7 +39,7 @@ if __name__ == "__main__":
         print("\nMatrix awal:")
         cetakMatrix(matrix_awal)
         #menampilkan nilai kurang i masing masing indeks
-        print("Nilai fungsi KURANG(i) untuk setiap i yang bukan ubin kosong:")
+        print("\nNilai fungsi KURANG(i) untuk setiap i yang bukan ubin kosong:")
         status_number = 0
         for i in range(1,16):
             kurang_number = KURANG(matrix_awal,i)
@@ -52,3 +52,8 @@ if __name__ == "__main__":
         if(matrix_awal.index(16) in get_1_position):
             status_number += 1
         print("Nilai dari nilai status reachable(sigma(i)+X):",status_number)
+        #mengecek status reachable
+        if(status_number % 2 != 0):#kalau ganjil maka tidak reachable
+            print("\nPersoalan tidak bisa diselesaikan!")
+        else:
+            print("aman")
