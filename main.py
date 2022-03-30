@@ -20,7 +20,7 @@ if __name__ == "__main__":
         puzzleSolver = TSP15Puzzle(matrix_awal)
         #lanjutkan program
         print("\nMatrix awal:")
-        puzzleSolver.cetakMatrix(matrix_awal)
+        puzzleSolver.cetakMatrix()
         #menampilkan nilai kurang i masing masing indeks
         print("\nNilai fungsi KURANG(i) untuk setiap i yang bukan ubin kosong:")
         status_number = 0
@@ -41,12 +41,8 @@ if __name__ == "__main__":
         else:
             #menyelesaikan puzzle
             jumlah_simpul = puzzleSolver.solve()
-
-            # TODO
-            # dummy
-            jumlah_simpul = 0
             #tampilkan urutan langkah
-
+            puzzleSolver.showStep()
             #menampilkan waktu eksekusi program
             time_elapsed = puzzleSolver.getElapsedTime()
             print("\nWaktu eksekusi program: %s ms" % (time_elapsed))
