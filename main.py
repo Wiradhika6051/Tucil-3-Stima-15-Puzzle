@@ -41,14 +41,60 @@ if __name__ == "__main__":
         else:
             #menyelesaikan puzzle
             jumlah_simpul = puzzleSolver.solve()
-            #tampilkan urutan langkah
-            print("Daftar Langkah:")
-            puzzleSolver.showStep()
-            #menampilkan waktu eksekusi program
-            time_elapsed = puzzleSolver.getElapsedTime()
-            print("\nWaktu eksekusi program: %s ms" % (time_elapsed))
-            #menampilkan jumlah simpul yang dibangkitkan
-            print("\nJumlah simpul yang dibangkitkan:",jumlah_simpul)
+            #menghandle kasus waktu penyelesaian terlalu lama
+            if(jumlah_simpul==None):
+                print("Persoalan membutuhkan waktu yang lama untuk diselesaikan! (melebihi 8 menit!)")
+            else:
+                #tampilkan urutan langkah
+                print("Daftar Langkah:")
+                puzzleSolver.showStep()
+                #menampilkan waktu eksekusi program
+                time_elapsed = puzzleSolver.getElapsedTime()
+                print("\nWaktu eksekusi program: %s ms" % (time_elapsed))
+                #menampilkan jumlah simpul yang dibangkitkan
+                print("\nJumlah simpul yang dibangkitkan:",jumlah_simpul)
 
 
 #tc: 1 2 3 4 5 6 16 8 9 10 7 11 13 14 15 12
+
+#tc : 1 2 3 4 5 6 7 8 9 10 16 11 13 14 15 12
+#1 2 3 4 
+#5 6 7 8 
+#9 10 11 12 
+#13 14 15 16
+
+#1 2 3 4 
+#5 6 7 8 
+#9 10 16 11 
+#13 14 15 12
+
+#1 2 3 4 
+#5 6 16 8 
+#9 10 7 11 (up)
+#13 14 15 12
+
+#1 2 3 4 
+#5 6 7 8 
+#9 10 11 16 (kanan)
+#13 14 15 12
+
+#1 2 3 4 
+#5 6 7 8 
+#9 10 15 11 (down)
+#13 14 16 12
+
+#1 2 3 4 
+#5 6 7 8 
+#9 16 10 11 (left)
+#13 14 15 12
+
+
+#1 2 3 4 
+#5 6 7 8 
+#9 10 11 16 (kanan)->base-1
+#13 14 15 12
+
+#1 2 3 4 
+#5 6 7 16 
+#9 10 11 12 (up?)->base-1
+#13 14 15 8
