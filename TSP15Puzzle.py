@@ -14,7 +14,7 @@ class TSP15Puzzle:
         self.endNode = None
         self.simpul = []#simpul yang sudah pernah dibangkitkan
         self.MAXTIME = 8*60*1000 #waktu maksimum komputasi (dalam ms)
-        #self.MAXTIME = 3*1000 #waktu maksimum komputasi (dalam ms)
+        #self.MAXTIME = 2*1000 #waktu maksimum komputasi (dalam ms)
     def get_matrix(self):
         return self.matrix
     def getElapsedTime(self):
