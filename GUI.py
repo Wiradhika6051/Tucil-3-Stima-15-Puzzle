@@ -16,7 +16,6 @@ class GUI(tk.Tk):
         self.filabel = []#daftar label fungsi kurang(i)
         self.solution = None
         self.iteration = 0
-        #self.solver = solver
 
         title_styles = {"font": ("Trebuchet MS Bold", 16),"foreground":"white","background":"#57536E"}
         input_text_styles =  {"font": ("Trebuchet MS Bold", 13),"foreground":"white","background":"#57536E"} 
@@ -28,8 +27,6 @@ class GUI(tk.Tk):
         matrix_cell_text_styles = {"font": ("Trebuchet MS Bold", 10),"foreground":"black","background":"#dde4ec"} 
 
         sigma_text_styles = {"font": ("Trebuchet MS Bold", 13),"foreground":"white","background":"#57536E"}
-        #main_frame = tk.LabelFrame(self, bg="#57536E",height=200,width=200)
-        #main_frame.grid(row=0,column=0,columnspan=3)
         #judul
         title_text = tk.Label(self,title_styles,text="15 Puzzle Solver",justify="center")
         title_text.grid(row=0,column=0,columnspan=3)
@@ -86,10 +83,7 @@ class GUI(tk.Tk):
         k = 0
         for i in range(4):
             for j in range(4):
-                #bg_frame = tk.Frame(matrix_frame,bg="black",borderwidth=1)
-                #bg_frame.grid(row=i,column=j)
-                cell = tk.Label(matrix_frame,matrix_cell_text_styles,text=" ",justify="center",relief="raised",padx=5,pady=1)
-                #cell.grid(row=0,column=0)
+                cell = tk.Label(matrix_frame,matrix_cell_text_styles,text=" ",justify="center",relief="raised",padx=5,pady=1,width=2)
                 cell.grid(row=i,column=j)
                 self.startMatrixCell.append(cell)
                 k+=1
@@ -110,10 +104,7 @@ class GUI(tk.Tk):
         k = 0
         for i in range(4):
             for j in range(4):
-                #bg_frame = tk.Frame(matrix_frame,bg="black",borderwidth=1)
-                #bg_frame.grid(row=i,column=j)
-                cell = tk.Label(self.e_matrix_frame,matrix_cell_text_styles,text=" ",justify="center",relief="raised",padx=5,pady=1)
-                #cell.grid(row=0,column=0)
+                cell = tk.Label(self.e_matrix_frame,matrix_cell_text_styles,text=" ",justify="center",relief="raised",padx=5,pady=1,width=2)
                 cell.grid(row=i,column=j)
                 self.endMatrixCell.append(cell)
                 k+=1
@@ -133,7 +124,6 @@ class GUI(tk.Tk):
             self.matriks[i] = angka
         self.solver = TSP15Puzzle(self.matriks)
         for k in range(16):
-          #  print(type(self.startMatrixCell[k]))
             if(self.matriks[k]==16):
                 self.startMatrixCell[k]['text'] = " "
             else:
