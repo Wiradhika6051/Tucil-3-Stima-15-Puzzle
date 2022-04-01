@@ -7,7 +7,8 @@ from numpy import array_equal
 class TSP15Puzzle:
     def __init__(self,matrix):
         self.matrix = matrix
-        self.startTime = time.time()*1000 # waktu mulai dalam ms
+        #self.startTime = time.time()*1000 # waktu mulai dalam ms
+        self.startTime = None # waktu mulai dalam ms
         self.endTime = None #waktu algoritma selesai
         self.solution = []
         self.endNode = None
@@ -274,6 +275,9 @@ class TSP15Puzzle:
       #  for i in range(len(src_mat)):
        #     salinan.append(src_mat[i])
        # return salinan
+    def setStartTime(self):
+        #mengassign nilai waktu mulai
+        self.startTime = time.time()*1000
 
 if __name__ == '__main__':
     import copy

@@ -1,20 +1,27 @@
 import tkinter as tk
+from tkinter import filedialog
+from TSP15Puzzle import TSP15Puzzle
+import random
+import os
 #sumber template GUI:https://gist.github.com/RamonWill/0422b061464097a7a0162f33e4c13a2e
 class GUI(tk.Tk):
-    def __init__(self,solver, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
         self.title("15 Puzzle Solver")
         self.geometry("700x400")
         self.configure(background="#57536E")
-        self.solver = solver
+        self.matriks = None
+        self.solver = None
+        self.filabel = []#daftar label fungsi kurang(i)
+        #self.solver = solver
 
         title_styles = {"font": ("Trebuchet MS Bold", 16),"foreground":"white","background":"#57536E"}
         input_text_styles =  {"font": ("Trebuchet MS Bold", 13),"foreground":"white","background":"#57536E"} 
 
         kurang_text_styles =  {"font": ("Trebuchet MS Bold", 13),"foreground":"white","background":"#57536E"} 
-        kurang_normal_text_styles = {"font": ("Trebuchet MS Bold", 10),"foreground":"white","background":"#57536E"} 
+        self.kurang_normal_text_styles = {"font": ("Trebuchet MS Bold", 10),"foreground":"white","background":"#57536E"} 
 
-        start_matrix_text_styles = {"font": ("Trebuchet MS Bold", 13),"foreground":"white","background":"#57536E"} 
+        self.start_matrix_text_styles = {"font": ("Trebuchet MS Bold", 13),"foreground":"white","background":"#57536E"} 
         matrix_cell_text_styles = {"font": ("Trebuchet MS Bold", 10),"foreground":"black","background":"#dde4ec"} 
 
         sigma_text_styles = {"font": ("Trebuchet MS Bold", 13),"foreground":"white","background":"#57536E"}
@@ -31,39 +38,42 @@ class GUI(tk.Tk):
         input_label = tk.Label(input_frame,input_text_styles,text="Pilih Input:",justify="center",width=18)
         input_label.grid(row=0,column=0,pady=6)
 
-        generate_button = tk.Button(input_frame,text="GENERATE")
+        generate_button = tk.Button(input_frame,text="GENERATE",command=lambda:self.generate())
         generate_button.grid(row=1,column=0,pady=5)
 
-        choose_from_button = tk.Button(input_frame,text="CHOOSE FROM FILE")
+        choose_from_button = tk.Button(input_frame,text="CHOOSE FROM FILE",command=lambda:self.getMatrixFromFile())
         choose_from_button.grid(row=2,column=0,pady=5)
 
-        #frame nilai fungsi kurang(i)
-        kurang_frame = tk.Frame(self,bg="#57536E",height=600,width=300,borderwidth=5)
-        kurang_frame.grid(row = 2,column=0,rowspan=2)
+        #sigma frame
+        self.sigma_frame = tk.Frame(self,bg="#57536E",height=600,width=300,borderwidth=5)
+        self.sigma_frame.grid(row=1,column=1)
 
-        kurang_label_1 = tk.Label(kurang_frame,kurang_text_styles,text="Nilai fungsi KURANG(i)",justify="center")
+        self.sigma_label = tk.Label(self.sigma_frame,self.start_matrix_text_styles,text="Nilai dari nilai status reachable(sigma(i)+X): 0",justify="left")
+        self.sigma_label.grid(row=0,column=0)
+
+        #frame nilai fungsi kurang(i)
+        self.kurang_frame = tk.Frame(self,bg="#57536E",height=600,width=300,borderwidth=5)
+        self.kurang_frame.grid(row = 2,column=0,rowspan=3)
+
+        kurang_label_1 = tk.Label(self.kurang_frame,kurang_text_styles,text="Nilai fungsi KURANG(i)",justify="center")
         kurang_label_1.grid(row=0,column=0,columnspan=2)
 
-        kurang_label_2 = tk.Label(kurang_frame,kurang_text_styles,text="untuk setiap i yang",justify="center")
+        kurang_label_2 = tk.Label(self.kurang_frame,kurang_text_styles,text="untuk setiap i yang",justify="center")
         kurang_label_2.grid(row=1,column=0,columnspan=2)
 
-        kurang_label_3 = tk.Label(kurang_frame,kurang_text_styles,text="bukan ubin kosong:",justify="center")
+        kurang_label_3 = tk.Label(self.kurang_frame,kurang_text_styles,text="bukan ubin kosong:",justify="center")
         kurang_label_3.grid(row=2,column=0,columnspan=2)
 
-        self.filabel = []
-        status_number = 0
-        for i in range(1,16):
-            kurang_number = self.solver.KURANG(i)
-            status_number += kurang_number
-            fi_label = tk.Label(kurang_frame,kurang_normal_text_styles,text="KURANG(%d) =  %d" % (i, kurang_number),justify="center")
-            fi_label.grid(row=i+2,column=0)
-            self.filabel.append(fi_label)
+        #tombol solve
+        solve_button = tk.Button(self,text="SOLVE",command=lambda:self.solve())
+        solve_button.grid(row=2,column=1,pady=5)
+       
 
         #menampilkan matriks awal
         start_matrix_frame = tk.Frame(self,bg="#57536E",height=600,width=300,borderwidth=5)
-        start_matrix_frame.grid(row=2,column=1)
+        start_matrix_frame.grid(row=3,column=1)
 
-        start_matrix_label = tk.Label(start_matrix_frame,start_matrix_text_styles,text="Matrix awal:",justify="center")
+        start_matrix_label = tk.Label(start_matrix_frame,self.start_matrix_text_styles,text="Matrix awal:",justify="center")
         start_matrix_label.grid(row=0,column=0)
         
         matrix_frame = tk.Frame(start_matrix_frame,bg="#e3af74",height=200,width=200,borderwidth=5)
@@ -75,45 +85,92 @@ class GUI(tk.Tk):
             for j in range(4):
                 #bg_frame = tk.Frame(matrix_frame,bg="black",borderwidth=1)
                 #bg_frame.grid(row=i,column=j)
-                cell = tk.Label(matrix_frame,matrix_cell_text_styles,text=self.solver.get_matrix()[k],justify="center",relief="raised",padx=5,pady=1)
+                cell = tk.Label(matrix_frame,matrix_cell_text_styles,text=" ",justify="center",relief="raised",padx=5,pady=1)
                 #cell.grid(row=0,column=0)
                 cell.grid(row=i,column=j)
-                self.startMatrixCell.append(matrix_frame)
+                self.startMatrixCell.append(cell)
                 k+=1
-
-        #frame untuk nilai sigma(kurang-i)+x
-        sigma_frame = tk.Frame(self,bg="#57536E",height=600,width=300,borderwidth=5)
-        sigma_frame.grid(row=1,column=1)
-
-        get_1_position = [ 1, 3, 4, 6, 9, 11, 12, 14 ] #jika kotak kosong berada di indeks ini, maka nilai status_number += 1
-        status_number += self.solver.KURANG(16)
-
-        sigma_label = tk.Label(sigma_frame,start_matrix_text_styles,text="Nilai dari nilai status reachable(sigma(i)+X): "+str(status_number),justify="left")
-        sigma_label.grid(row=0,column=0)
-
-        #mengecek status reachable
-        if(status_number % 2 != 0):#kalau ganjil maka tidak reachable
-            warning_label = tk.Label(sigma_frame,start_matrix_text_styles,text="Persoalan tidak bisa diselesaikan!",justify="left")
-            warning_label.grid(row=1,column=0)
-        else:
-            #menyelesaikan puzzle
-            jumlah_simpul = self.solver.solve()
-            #menghandle kasus waktu penyelesaian terlalu lama
-            if(jumlah_simpul==None):
-                warning_label = tk.Label(sigma_frame,start_matrix_text_styles,text="Persoalan membutuhkan waktu yang lama untuk diselesaikan! (melebihi 8 menit!)",justify="left")
+    def generate(self):
+        #menghasilkan matriks 15 puzzle acak
+        self.matriks = [0 for i in range(16)]
+        for i in range(16):
+            angka = random.randint(1,16)
+            while angka in self.matriks:
+                angka = random.randint(1,16)
+            self.matriks[i] = angka
+        self.solver = TSP15Puzzle(self.matriks)
+        for k in range(16):
+          #  print(type(self.startMatrixCell[k]))
+            if(self.matriks[k]==16):
+                self.startMatrixCell[k]['text'] = " "
+            else:
+                self.startMatrixCell[k]['text'] = str(self.matriks[k])
+    def getMatrixFromFile(self):
+        #memilih file input dari file
+        filename = filedialog.askopenfilename(initialdir=os.getcwd())
+        if(filename!=None):
+            self.matriks = [0 for i in range(16)]
+            i = 0
+            f = open(filename, "r")
+            for line in f:
+                subarr = line.rstrip('\n').split(" ")
+                for num in subarr:
+                    self.matriks[i] = int(num)
+                    i+=1
+            f.close()
+            self.solver = TSP15Puzzle(self.matriks)        
+            for k in range(16):
+              #  print(type(self.startMatrixCell[k]))
+                if(self.matriks[k]==16):
+                    self.startMatrixCell[k]['text'] = " "
+                else:
+                    self.startMatrixCell[k]['text'] = str(self.matriks[k])       
+    def solve(self):
+        #menyelesaikan puzzle
+        if(self.matriks!=None and self.solver!=None):
+            self.solver.setStartTime()
+            #hitung yang kurang(i)
+            status_number = 0
+            for i in range(1,16):
+                kurang_number = self.solver.KURANG(i)
+                status_number += kurang_number
+                fi_label = tk.Label(self.kurang_frame,self.kurang_normal_text_styles,text="KURANG(%d) =  %d" % (i, kurang_number),justify="center")
+                fi_label.grid(row=i+2,column=0)
+                self.filabel.append(fi_label)
+            #Hitung nilai sigma(kurang-i)+x
+            get_1_position = [ 1, 3, 4, 6, 9, 11, 12, 14 ] #jika kotak kosong berada di indeks ini, maka nilai status_number += 1
+            status_number += self.solver.KURANG(16)
+            if(self.matriks.index(16) in get_1_position):
+                status_number += 1
+            self.sigma_label['text'] = "Nilai dari nilai status reachable(sigma(i)+X): "+str(status_number)
+            #mengecek status reachable
+            if(status_number % 2 != 0):#kalau ganjil maka tidak reachable
+                warning_label = tk.Label(self.sigma_frame,self.start_matrix_text_styles,text="Persoalan tidak bisa diselesaikan!",justify="left")
                 warning_label.grid(row=1,column=0)
+            else:
+                #menyelesaikan puzzle
+                jumlah_simpul = self.solver.solve()
+                #menghandle kasus waktu penyelesaian terlalu lama
+                if(jumlah_simpul==None):
+                    warning_label = tk.Label(self.sigma_frame,self.start_matrix_text_styles,text="Persoalan membutuhkan waktu yang lama untuk diselesaikan! (melebihi 8 menit!)",justify="left")
+                    warning_label.grid(row=1,column=0)
+                else:
+                    #menampilkan waktu eksekusi program
+                    time_elapsed = self.solver.getElapsedTime()
+                    time_label = tk.Label(self.sigma_frame,self.start_matrix_text_styles,text="Waktu eksekusi program: %s ms" % (time_elapsed),justify="left")
+                    time_label.grid(row=1,column=0)
+                    #menampilkan jumlah simpul yang dibangkitkan
+                    node_label = tk.Label(self.sigma_frame,self.start_matrix_text_styles,text="Jumlah simpul yang dibangkitkan: %d" % (jumlah_simpul))
+                    node_label.grid(row=2,column=0)
+"""
+
+        
             else:
                 #tampilkan urutan langkah
                 #warning_label = tk.Label(sigma_frame,start_matrix_text_styles,text="Daftar Langkah:")
                 #warning_label.grid(row=1,column=0)
                 ###puzzleSolver.showStep()
-                #menampilkan waktu eksekusi program
-                time_elapsed = self.solver.getElapsedTime()
-                time_label = tk.Label(sigma_frame,start_matrix_text_styles,text="Waktu eksekusi program: %s ms" % (time_elapsed),justify="left")
-                time_label.grid(row=1,column=0)
-                #menampilkan jumlah simpul yang dibangkitkan
-                node_label = tk.Label(sigma_frame,start_matrix_text_styles,text="Jumlah simpul yang dibangkitkan: %d" % (jumlah_simpul))
-                node_label.grid(row=2,column=0)
+ 
 
         #main_frame = tk.Frame(self, bg="#706d90", height=431, width=626)  # this is the background
         #main_frame.grid(row=0,column=0,rowspan=2)
@@ -151,10 +208,11 @@ class GUI(tk.Tk):
 
         #signup_btn = tk.ttk.Button(frame_login, text="Register", command=lambda: get_signup())
         #signup_btn.place(rely=0.70, relx=0.75)
-
+        """
 
 if __name__ == '__main__':
-    from TSP15Puzzle import TSP15Puzzle
-    solver = TSP15Puzzle([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16])
-    gui = GUI(solver)
+    #from TSP15Puzzle import TSP15Puzzle
+    #solver = TSP15Puzzle([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16])
+    #gui = GUI(solver)
+    gui = GUI()
     gui.mainloop()
