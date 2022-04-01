@@ -42,9 +42,13 @@ if __name__ == "__main__":
             #menyelesaikan puzzle
             jumlah_simpul = puzzleSolver.solve()
             #tampilkan urutan langkah
+            print("Daftar Langkah:")
             puzzleSolver.showStep()
             #menampilkan waktu eksekusi program
             time_elapsed = puzzleSolver.getElapsedTime()
             print("\nWaktu eksekusi program: %s ms" % (time_elapsed))
             #menampilkan jumlah simpul yang dibangkitkan
             print("\nJumlah simpul yang dibangkitkan:",jumlah_simpul)
+
+
+#tc: 1 2 3 4 5 6 16 8 9 10 7 11 13 14 15 12
