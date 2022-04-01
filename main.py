@@ -18,6 +18,7 @@ if __name__ == "__main__":
         print("Semua elemen harus unik!")
     else:
         puzzleSolver = TSP15Puzzle(matrix_awal)
+        puzzleSolver.setStartTime()
         #lanjutkan program
         print("\nMatrix awal:")
         puzzleSolver.cetakMatrix()
@@ -47,7 +48,7 @@ if __name__ == "__main__":
             else:
                 #tampilkan urutan langkah
                 print("Daftar Langkah:")
-                puzzleSolver.showStep()
+                puzzleSolver.showStep_CLI()
                 #menampilkan waktu eksekusi program
                 time_elapsed = puzzleSolver.getElapsedTime()
                 print("\nWaktu eksekusi program: %s ms" % (time_elapsed))

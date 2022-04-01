@@ -249,10 +249,11 @@ class TSP15Puzzle:
             node_idx = self.getIDX(node[1],self.simpul)
             node = self.simpul[node_idx]
             self.solution.append(node)
-        self.solution = sorted(self.solution,key=itemgetter(0),reverse=True)
-    def showStep(self):
+        self.solution = sorted(self.solution,key=itemgetter(0))
+    def showStep_CLI(self):
         i = 1
-        for idx in range(len(self.solution)-1,-1,-1):
+        #for idx in range(len(self.solution)-1,-1,-1):
+        for idx in range(len(self.solution)):
             print("Langkah "+str(i)+":")
             self.cetakMatrix(self.solution[idx][2])
             i += 1
@@ -278,6 +279,9 @@ class TSP15Puzzle:
     def setStartTime(self):
         #mengassign nilai waktu mulai
         self.startTime = time.time()*1000
+    def get_solution(self):
+        #mendapatkan solusi 15 puzzle
+        return self.solution
 
 if __name__ == '__main__':
     import copy

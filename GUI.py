@@ -3,16 +3,19 @@ from tkinter import filedialog
 from TSP15Puzzle import TSP15Puzzle
 import random
 import os
+import time
 #sumber template GUI:https://gist.github.com/RamonWill/0422b061464097a7a0162f33e4c13a2e
 class GUI(tk.Tk):
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
         self.title("15 Puzzle Solver")
-        self.geometry("700x400")
+        self.geometry("700x700")
         self.configure(background="#57536E")
         self.matriks = None
         self.solver = None
         self.filabel = []#daftar label fungsi kurang(i)
+        self.solution = None
+        self.iteration = 0
         #self.solver = solver
 
         title_styles = {"font": ("Trebuchet MS Bold", 16),"foreground":"white","background":"#57536E"}
@@ -90,6 +93,36 @@ class GUI(tk.Tk):
                 cell.grid(row=i,column=j)
                 self.startMatrixCell.append(cell)
                 k+=1
+        #template buat nampilin matriks akhir
+        self.end_matrix_frame = tk.Frame(self,bg="#57536E",height=600,width=300,borderwidth=5)
+        self.end_matrix_frame.grid(row=4,column=1)
+
+        self.end_matrix_label = tk.Label(self.end_matrix_frame,self.start_matrix_text_styles,text="Matrix Akhir:",justify="center")
+        self.end_matrix_label.grid(row=0,column=0,columnspan=2)
+
+        self.iteration_label = tk.Label(self.end_matrix_frame,self.start_matrix_text_styles,text="Iterasi Ke-0",justify="center")
+        self.iteration_label.grid(row=1,column=0,columnspan=2)
+        
+        self.e_matrix_frame = tk.Frame(self.end_matrix_frame,bg="#e3af74",height=200,width=200,borderwidth=5)
+        self.e_matrix_frame.grid(row=2,column=0,columnspan=2)
+
+        self.endMatrixCell = []
+        k = 0
+        for i in range(4):
+            for j in range(4):
+                #bg_frame = tk.Frame(matrix_frame,bg="black",borderwidth=1)
+                #bg_frame.grid(row=i,column=j)
+                cell = tk.Label(self.e_matrix_frame,matrix_cell_text_styles,text=" ",justify="center",relief="raised",padx=5,pady=1)
+                #cell.grid(row=0,column=0)
+                cell.grid(row=i,column=j)
+                self.endMatrixCell.append(cell)
+                k+=1
+        #prev button
+        self.prev_button = tk.Button(self.end_matrix_frame,text="PREV MOVE",command=lambda:self.prev(),state="disabled")
+        self.prev_button.grid(row=3,column=0)        
+        #next button
+        self.next_button = tk.Button(self.end_matrix_frame,text="NEXT MOVE",command=lambda:self.next(),state="disabled")
+        self.next_button.grid(row=3,column=1)
     def generate(self):
         #menghasilkan matriks 15 puzzle acak
         self.matriks = [0 for i in range(16)]
@@ -162,53 +195,50 @@ class GUI(tk.Tk):
                     #menampilkan jumlah simpul yang dibangkitkan
                     node_label = tk.Label(self.sigma_frame,self.start_matrix_text_styles,text="Jumlah simpul yang dibangkitkan: %d" % (jumlah_simpul))
                     node_label.grid(row=2,column=0)
-"""
-
-        
-            else:
-                #tampilkan urutan langkah
-                #warning_label = tk.Label(sigma_frame,start_matrix_text_styles,text="Daftar Langkah:")
-                #warning_label.grid(row=1,column=0)
-                ###puzzleSolver.showStep()
- 
-
-        #main_frame = tk.Frame(self, bg="#706d90", height=431, width=626)  # this is the background
-        #main_frame.grid(row=0,column=0,rowspan=2)
-
-        #self.geometry("700x500")  # Sets window size to 626w x 431h pixels
-        #self.resizable(0, 0)  # This prevents any resizing of the screen
-       # title_styles = {"font": ("Trebuchet MS Bold", 16), "background": "blue"}
-        #title_styles = {"font": ("Trebuchet MS Bold", 16),"foreground":"blue"}
-
-        #text_styles = {"font": ("Verdana", 14),
-         #              "background": "blue",
-         #              "foreground": "#E1FFFF"}
-
-        #title = tk.ti
-        #frame_login = tk.Frame(main_frame, bg="blue", relief="groove", bd=2)  # this is the frame that holds all the login details and buttons
-        #frame_login.place(rely=0.30, relx=0.17, height=130, width=400)
-
-        #label_title = tk.Label(frame_login, title_styles, text="Login Page")
-        #label_title.grid(row=0, column=1, columnspan=1)
-
-        #label_user = tk.Label(frame_login, text_styles, text="Username:")
-        #label_user.grid(row=1, column=0)
-
-        #label_pw = tk.Label(frame_login, text_styles, text="Password:")
-        #label_pw.grid(row=2, column=0)
-
-        #entry_user = tk.ttk.Entry(frame_login, width=45, cursor="xterm")
-        #entry_user.grid(row=1, column=1)
-
-       # entry_pw = tk.ttk.Entry(frame_login, width=45, cursor="xterm", show="*")
-        #entry_pw.grid(row=2, column=1)
-
-        #button = tk.ttk.Button(frame_login, text="Login", command=lambda: getlogin())
-        #button.place(rely=0.70, relx=0.50)
-
-        #signup_btn = tk.ttk.Button(frame_login, text="Register", command=lambda: get_signup())
-        #signup_btn.place(rely=0.70, relx=0.75)
-        """
+                    self.solution = self.solver.get_solution()
+                    self.iteration = 0
+                    initial_action = self.solution[self.iteration]
+                    for k in range(16):
+                        if(initial_action[2][k]==16):
+                            self.endMatrixCell[k]['text'] = " "
+                        else:
+                            self.endMatrixCell[k]['text'] = str(initial_action[2][k])
+                    self.prev_button['state'] = "disabled"
+                    self.next_button['state'] = "active"
+    def next(self):
+        #menuju move selanjutnya
+        if(self.solution!=None):
+            if(self.iteration<len(self.solution)):
+                self.iteration+=1
+                action = self.solution[self.iteration]
+                self.iteration_label['text'] = "Iterasi Ke-"+str(self.iteration)
+                for k in range(16):
+                    if(action[2][k]==16):
+                        self.endMatrixCell[k]['text'] = " "
+                    else:
+                        self.endMatrixCell[k]['text'] = str(action[2][k])
+                if(self.iteration==len(self.solution)-1):
+                    self.next_button['state'] = "disabled"
+                else:
+                    self.next_button['state'] = "active"
+                    self.prev_button['state'] = "active"
+    def prev(self):
+        #menuju move sebelumnya
+        if(self.solution!=None):
+            if(self.iteration>0):
+                self.iteration-=1
+                action = self.solution[self.iteration]
+                self.iteration_label['text'] = "Iterasi Ke-"+str(self.iteration)
+                for k in range(16):
+                    if(action[2][k]==16):
+                        self.endMatrixCell[k]['text'] = " "
+                    else:
+                        self.endMatrixCell[k]['text'] = str(action[2][k])
+                if(self.iteration==0):
+                    self.prev_button['state'] = "disabled"
+                else:
+                    self.prev_button['state'] = "active"
+                    self.next_button['state'] = "active"
 
 if __name__ == '__main__':
     #from TSP15Puzzle import TSP15Puzzle
