@@ -14,7 +14,6 @@ class TSP15Puzzle:
         self.endNode = None
         self.simpul = []#simpul yang sudah pernah dibangkitkan
         self.MAXTIME = 8*60*1000 #waktu maksimum komputasi (dalam ms)
-        #self.MAXTIME = 2*1000 #waktu maksimum komputasi (dalam ms)
     def get_matrix(self):
         return self.matrix
     def getElapsedTime(self):
@@ -77,8 +76,6 @@ class TSP15Puzzle:
         if(idx_kosong//4 > 0 and not found):#bukan di baris pertama
             temp = copy.deepcopy(self.matrix)
             temp[idx_kosong],temp[idx_kosong-4] = temp[idx_kosong-4],temp[idx_kosong]
-            #temp[idx_kosong] = temp[idx_kosong-4]
-            #temp[idx_kosong-4] = 16
             node = [i,0,temp,self.getCost(temp)]
             simpul_hidup.append(node)
             self.simpul.append(node)
@@ -92,8 +89,6 @@ class TSP15Puzzle:
         if(idx_kosong%4 != 3 and not found):#bukan di kolom terakhir
             temp = copy.deepcopy(self.matrix)
             temp[idx_kosong],temp[idx_kosong+1] = temp[idx_kosong+1],temp[idx_kosong]
-            #temp[idx_kosong] = temp[idx_kosong+1]
-            #temp[idx_kosong+1] = 16
             node = [i,0,temp,self.getCost(temp)]
             simpul_hidup.append(node)
             self.simpul.append(node)
@@ -107,8 +102,6 @@ class TSP15Puzzle:
         if(idx_kosong//4 != 3 and not found):#bukan di baris terakhir
             temp = copy.deepcopy(self.matrix)
             temp[idx_kosong],temp[idx_kosong+4] = temp[idx_kosong+4],temp[idx_kosong]
-            #temp[idx_kosong] = temp[idx_kosong+4]
-            #temp[idx_kosong+4] = 16
             node = [i,0,temp,self.getCost(temp)]
             simpul_hidup.append(node) 
             self.simpul.append(node)
@@ -122,8 +115,6 @@ class TSP15Puzzle:
         if(idx_kosong%4 != 0 and not found):#bukan di kolom pertama
             temp = copy.deepcopy(self.matrix)
             temp[idx_kosong],temp[idx_kosong-1] = temp[idx_kosong-1],temp[idx_kosong]
-            #temp[idx_kosong] = temp[idx_kosong-1]
-            #temp[idx_kosong-1] = 16
             node = [i,0,temp,self.getCost(temp)]
             simpul_hidup.append(node) 
             self.simpul.append(node)  
@@ -139,42 +130,21 @@ class TSP15Puzzle:
                 return None
             temp = copy.deepcopy(simpul_hidup)
             simpul_hidup = sorted(temp,key=itemgetter(3))#urutkan dari cost yang terkecil
-            #print("before:")
-            #print(simpul_hidup)
             node = simpul_hidup.pop(0)
-            #self.cetakMatrix(node[2])
-            #print("after:")
-            #print(simpul_hidup)
-            #print("panjang",len(simpul_hidup))
-            #print("aa")
             time.sleep(1)
             if(self.g(node[2])==0):
-           #     print("ab")
                 self.endNode = copy.deepcopy(node)
                 #solusi ketemu
                 break
             #generasikan simpul lain
             idx_kosong = node[2].index(16)
             # 1->ke atas
-            #print(idx_kosong)
             if(idx_kosong//4 > 0):#bukan di baris pertama
                 temp = copy.deepcopy(node[2])
                 temp[idx_kosong],temp[idx_kosong-4] = temp[idx_kosong-4],temp[idx_kosong]
-                #print("temp:")
-                #self.cetakMatrix(temp)
-               # print("asli:")
-                #self.cetakMatrix(node[2])
-                #temp[idx_kosong] = temp[idx_kosong-4]
-                #temp[idx_kosong-4] = 16
                 jumlah_simpul+=1
                 if self.checkUnique(temp):
-                   # print("up:")
-                 #   self.cetakMatrix(temp)
-                  #  print("asli-1")
-                #    self.cetakMatrix(node[2])
                     temp_node = [i,node[0],temp,self.getCost(temp)]
-                 #   print("asli-2")
-                 #   self.cetakMatrix(node[2])
                     simpul_hidup.append(temp_node)
                     self.simpul.append(temp_node)
                     i+=1
@@ -182,28 +152,18 @@ class TSP15Puzzle:
             if(idx_kosong%4 != 3):#bukan di kolom terakhir
                 temp = copy.deepcopy(node[2])
                 temp[idx_kosong],temp[idx_kosong+1] = temp[idx_kosong+1],temp[idx_kosong]
-                #temp[idx_kosong] = temp[idx_kosong+1]
-                #temp[idx_kosong+1] = 16
                 jumlah_simpul+=1
                 if self.checkUnique(temp):
-                   # print("right:")
-                   # self.cetakMatrix(temp)
                     temp_node = [i,node[0],temp,self.getCost(temp)]
                     simpul_hidup.append(temp_node)
                     self.simpul.append(temp_node)
                     i+=1
             # 3->ke bawah
             if(idx_kosong//4 != 3):#bukan di baris terakhir
-           #     print("node2?")
-            #    self.cetakMatrix(node[2])
                 temp = copy.deepcopy(node[2])
                 temp[idx_kosong],temp[idx_kosong+4] = temp[idx_kosong+4],temp[idx_kosong]
-                #temp[idx_kosong] = temp[idx_kosong+4]
-                #temp[idx_kosong+4] = 16
                 jumlah_simpul+=1
                 if self.checkUnique(temp):
-            #        print("down:")
-            #        self.cetakMatrix(temp)
                     temp_node = [i,node[0],temp,self.getCost(temp)]
                     simpul_hidup.append(temp_node) 
                     self.simpul.append(temp_node)
@@ -212,37 +172,25 @@ class TSP15Puzzle:
             if(idx_kosong%4 != 0):#bukan di kolom pertama
                 temp = copy.deepcopy(node[2])
                 temp[idx_kosong],temp[idx_kosong-1] = temp[idx_kosong-1],temp[idx_kosong]
-               # temp[idx_kosong] = temp[idx_kosong-1]
-               # temp[idx_kosong-1] = 16
                 jumlah_simpul+=1
                 if self.checkUnique(temp):
-           #         print("left:")
-           #         self.cetakMatrix(temp)
                     temp_node = [i,node[0],temp,self.getCost(temp)]
                     simpul_hidup.append(temp_node) 
                     self.simpul.append(temp_node)  
                     i+=1   
-            #print("asu")
         #mendapatkan path rute
         self.getPath(self.endNode)
-
         self.endTime = time.time()*1000
         return jumlah_simpul
     def getIDX(self,node_idx,matrix):
-        #mendaptkan index suatu node
+        #mendapatkan index suatu node
         i = 0
-     #   print("anyink")
-     #   print(matrix)
-     #   print(node_idx)
         for elmt in matrix:
             if(elmt[0]==node_idx):#indeksnya sama
                 return i
             i+=1
     def getPath(self,node):
         #mendapatkan path dari end node ke root
-        #print("a")
-        #print(node)
-        #print(self.simpul)
         node_idx = self.getIDX(node[0],self.simpul)
         self.solution.append(self.simpul[node_idx])
         while(node_idx!=0):#bukan root,loop sampe ketemu loop
@@ -252,7 +200,6 @@ class TSP15Puzzle:
         self.solution = sorted(self.solution,key=itemgetter(0))
     def showStep_CLI(self):
         i = 1
-        #for idx in range(len(self.solution)-1,-1,-1):
         for idx in range(len(self.solution)):
             print("Langkah "+str(i)+":")
             self.cetakMatrix(self.solution[idx][2])
@@ -263,62 +210,15 @@ class TSP15Puzzle:
             if self.compareMatrix(simpul[2],matrix):
                 return False
         return True
-
     def compareMatrix(self,mat1,mat2):
     #membandingkan 2 buah matrix
         for i in range(len(mat1)):
             if(mat1[i]!=mat2[i]):
                 return False
         return True
-    #def salin_matrix(self,src_mat):
-    #   #membuat matriks salinan src_mat
-     #   salinan = []
-      #  for i in range(len(src_mat)):
-       #     salinan.append(src_mat[i])
-       # return salinan
     def setStartTime(self):
         #mengassign nilai waktu mulai
         self.startTime = time.time()*1000
     def get_solution(self):
         #mendapatkan solusi 15 puzzle
         return self.solution
-
-if __name__ == '__main__':
-    import copy
-    #array = [[1,1,[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16],200],[2,1,[1,2,3,4,5,7,6,8,9,10,11,12,13,14,15,16],100],[3,1,[1,2,4,3,5,6,7,8,9,10,11,12,13,14,15,16],150]]
-    #array = sorted(array,key=itemgetter(3))
-    #for item in array:
-    #    print(item)
-    """
-    import hashlib 
-    array_1 = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16]
-    str_1 = ""
-    for char in array_1:
-        str_1 = str_1 + "0" + str(char)
-    print(str_1)
-    array_2 = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,16,15]
-    str_2 = ""
-    for char in array_2:
-        str_2 = str_2 + "0" + str(char)
-    print(str_2)
-    str_1.encode("utf-8")
-    str_2.encode("utf-8")
-    h1 = hashlib.sha3_512() # Python 3.6+
-    h1.update(str_1)
-    h1.hexdigest()
-    h2 = hashlib.sha3_512() # Python 3.6+
-    h2.update(str_2)
-    h2.hexdigest()
-    """
-    a  = [[1,2,[2,2,2],1],[2,3,[2,3,3],2]]
-    b = []
-    #for i in range(len(a)):
-    #    print(i)
-    #    b.append(a[i])
-    b = copy.deepcopy(a)
-    print(b)
-    b[0][0] = 3
-    b[0][2].append(22)
-
-    print(b)
-    print(a)

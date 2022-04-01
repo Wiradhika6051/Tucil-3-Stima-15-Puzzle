@@ -239,10 +239,3 @@ class GUI(tk.Tk):
                 else:
                     self.prev_button['state'] = "active"
                     self.next_button['state'] = "active"
-
-if __name__ == '__main__':
-    #from TSP15Puzzle import TSP15Puzzle
-    #solver = TSP15Puzzle([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16])
-    #gui = GUI(solver)
-    gui = GUI()
-    gui.mainloop()
