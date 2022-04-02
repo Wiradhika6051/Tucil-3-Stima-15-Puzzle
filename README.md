@@ -49,8 +49,10 @@ Program ini adalah sebuah program dalam bahasa Python yang mencoba menyelesaikan
  - Jika program not responding, maka ditunggu saja mengingat algoritma ini cukup berat untuk puzzle yang memerlukan move diatas 20 moves.
  ## Tambahan
  - Format penulisan input berupa matriks 4x4 dengan tiap elemen dipisahkan spasi dan untuk sel kosong, direpresentasikan sebagai nomor 16. Contoh:
+`
 5 2 8 10
 1 11 6 4
 7 9 16 3
 13 14 15 12
+`
  - Di repo ini, terdapat branch bernama **cli** yang berisi program yang sama namun dalam format CLI (command line interface). Algoritma yang digunakan sama dengan yang di branch ini. Saya menyertakannya karena awalnya saya membuat program ini dalam CLI untuk testing kemudian switch ke GUI. Karena sayang jika dihapus, saya masukkan program CLI nya ke branch yang berbeda.
