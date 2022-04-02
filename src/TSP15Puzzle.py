@@ -11,6 +11,7 @@ class TSP15Puzzle:
         self.solution = []
         self.endNode = None
         self.simpul = []#simpul yang sudah pernah dibangkitkan
+        self.simpul_hidup = []
         #self.MAXTIME = 8*60*1000 #waktu maksimum komputasi (dalam ms)
     def get_matrix(self):
         return self.matrix
@@ -61,7 +62,6 @@ class TSP15Puzzle:
         #menyelesaikan puzzle dengan algoritma branch and bound
         #struktur data simpul: simpul = (indeks,parent,isi, cost,hash_value,kedalaman)->disimpan di atribut kelas
         #return (jumlah_simpul_yang_berhasil_dibangkitkan)
-        simpul_hidup = []
         self.solution = []
         #inisialisasi simpul pertama
         i = 0
@@ -83,7 +83,7 @@ class TSP15Puzzle:
             temp = copy.deepcopy(self.matrix)
             temp[idx_kosong],temp[idx_kosong-4] = temp[idx_kosong-4],temp[idx_kosong]
             node = [i,0,temp,1+self.getCost(temp),self.hashing(temp),1]
-            simpul_hidup.append(node)
+            self.simpul_hidup.append(node)
             self.simpul.append(node)
             i+=1
             jumlah_simpul+=1
@@ -96,7 +96,7 @@ class TSP15Puzzle:
             temp = copy.deepcopy(self.matrix)
             temp[idx_kosong],temp[idx_kosong+1] = temp[idx_kosong+1],temp[idx_kosong]
             node = [i,0,temp,1+self.getCost(temp),self.hashing(temp),1]
-            simpul_hidup.append(node)
+            self.simpul_hidup.append(node)
             self.simpul.append(node)
             i+=1
             jumlah_simpul+=1
@@ -109,7 +109,7 @@ class TSP15Puzzle:
             temp = copy.deepcopy(self.matrix)
             temp[idx_kosong],temp[idx_kosong+4] = temp[idx_kosong+4],temp[idx_kosong]
             node = [i,0,temp,1+self.getCost(temp),self.hashing(temp),1]
-            simpul_hidup.append(node) 
+            self.simpul_hidup.append(node) 
             self.simpul.append(node)
             i+=1       
             jumlah_simpul+=1
@@ -122,7 +122,7 @@ class TSP15Puzzle:
             temp = copy.deepcopy(self.matrix)
             temp[idx_kosong],temp[idx_kosong-1] = temp[idx_kosong-1],temp[idx_kosong]
             node = [i,0,temp,1+self.getCost(temp),self.hashing(temp),1]
-            simpul_hidup.append(node) 
+            self.simpul_hidup.append(node) 
             self.simpul.append(node)  
             i+=1   
             jumlah_simpul+=1
@@ -130,17 +130,26 @@ class TSP15Puzzle:
                 self.endNode = copy.deepcopy(node)
                 #solusi ketemu
                 found = True
-        while(simpul_hidup and not found):#selama masih ada simpul hidup
+        while(len(self.simpul_hidup)>0 and not found):#selama masih ada simpul hidup
             #temp_time = time.time()*1000
             #if(temp_time-self.startTime>self.MAXTIME):
             #    return None
-            temp = copy.deepcopy(simpul_hidup)
-            simpul_hidup = sorted(temp,key=itemgetter(3))#urutkan dari cost yang terkecil
-            node = simpul_hidup.pop(0)
+            temp = copy.deepcopy(self.simpul_hidup)
+            self.simpul_hidup = sorted(temp,key=itemgetter(3))#urutkan dari cost yang terkecil
+            node = self.simpul_hidup.pop(0)
             if(self.g(node[2])==0):
-                self.endNode = copy.deepcopy(node)
-                #solusi ketemu
-                break
+                if(self.endNode==None):
+                    self.endNode = copy.deepcopy(node)
+                    self.pruning(self.endNode[3])
+                    if(len(self.simpul_hidup)==0):
+                        break
+                    #solusi ketemu
+                elif(node[3]<self.endNode[3]):
+                    self.endNode = copy.deepcopy(node)
+                    self.pruning(self.endNode[3])
+                    if(len(self.simpul_hidup)==0):
+                        break
+                    #solusi ketemu                   
             #generasikan simpul lain
             idx_kosong = node[2].index(16)
             f_i = self.simpul[node[0]][5]+1
@@ -154,7 +163,7 @@ class TSP15Puzzle:
                     #dapatkan kedalaman matriks atasannya
                     #f_i = self.simpul[node[0]][5]+1
                     temp_node = [i,node[0],temp,f_i+self.getCost(temp),hash_value,f_i]
-                    simpul_hidup.append(temp_node)
+                    self.simpul_hidup.append(temp_node)
                     self.simpul.append(temp_node)
                     i+=1
             # 2->ke kanan
@@ -166,7 +175,7 @@ class TSP15Puzzle:
                 if self.checkUnique(hash_value):
                     #f_i = self.simpul[node[0]][5]+1
                     temp_node = [i,node[0],temp,f_i+self.getCost(temp),hash_value,f_i]
-                    simpul_hidup.append(temp_node)
+                    self.simpul_hidup.append(temp_node)
                     self.simpul.append(temp_node)
                     i+=1
             # 3->ke bawah
@@ -178,7 +187,7 @@ class TSP15Puzzle:
                 if self.checkUnique(hash_value):
                     #f_i = self.simpul[node[0]][5]+1
                     temp_node = [i,node[0],temp,f_i+self.getCost(temp),hash_value,f_i]
-                    simpul_hidup.append(temp_node) 
+                    self.simpul_hidup.append(temp_node) 
                     self.simpul.append(temp_node)
                     i+=1       
             # 4->ke kiri
@@ -190,7 +199,7 @@ class TSP15Puzzle:
                 if self.checkUnique(hash_value):
                     #f_i = self.simpul[node[0]][5]+1
                     temp_node = [i,node[0],temp,f_i+self.getCost(temp),hash_value,f_i]
-                    simpul_hidup.append(temp_node) 
+                    self.simpul_hidup.append(temp_node) 
                     self.simpul.append(temp_node)  
                     i+=1   
         #mendapatkan path rute
@@ -250,3 +259,11 @@ class TSP15Puzzle:
             string+= "0"
             string+= str(char)
         return hash(string)
+    def pruning(self,cost):
+        #memangkas cabang aktif yang cost nya lebih besar dari cost
+        temp = copy.deepcopy(self.simpul_hidup)
+        for simpul in self.simpul_hidup:
+            if(simpul[3]>cost):
+                idx = self.getIDX(simpul[0],temp)
+                temp.pop(idx)
+        self.simpul_hidup = copy.deepcopy(temp)
