@@ -212,7 +212,24 @@ class GUI(tk.Tk):
                 else:
                     #menampilkan waktu eksekusi program
                     time_elapsed = self.solver.getElapsedTime()
-                    self.time_label = tk.Label(self.sigma_frame,self.start_matrix_text_styles,text="Waktu eksekusi program: %s ms" % (time_elapsed),justify="left")
+                    if(time_elapsed<1000):#kurang dari 1 detik
+                        self.time_label = tk.Label(self.sigma_frame,self.start_matrix_text_styles,text="Waktu eksekusi program: %s ms" % (round(time_elapsed,3)),justify="left")
+                    elif(time_elapsed<1000*60):#kurang dari 1 menit
+                        self.time_label = tk.Label(self.sigma_frame,self.start_matrix_text_styles,text="Waktu eksekusi program: %d detik %s ms" % (time_elapsed//1000,round(time_elapsed%1000,3)),justify="left")
+                    elif(time_elapsed<1000*60*60):#kurang dari 1 jam
+                        menit = time_elapsed//(1000*60)
+                        remainder = time_elapsed%(1000*60)
+                        detik = remainder //1000
+                        ms = round(remainder % 1000,3)
+                        self.time_label = tk.Label(self.sigma_frame,self.start_matrix_text_styles,text="Waktu eksekusi program: %d menit %d detik %s ms" % (menit,detik,ms),justify="left")
+                    else: #lebih dari 1 jam
+                        jam = time_elapsed//(1000*60*60)
+                        rem_1 = time_elapsed%(1000*60*60)
+                        menit = rem_1//(1000*60)
+                        remainder = rem_1%(1000*60)
+                        detik = remainder //1000
+                        ms = round(remainder % 1000,3)
+                        self.time_label = tk.Label(self.sigma_frame,self.start_matrix_text_styles,text="Waktu eksekusi program: %d jam %d menit %d detik %s ms" % (jam,menit,detik,ms),justify="left")                        
                     self.time_label.grid(row=1,column=0)
                     #menampilkan jumlah simpul yang dibangkitkan
                     self.node_label = tk.Label(self.sigma_frame,self.start_matrix_text_styles,text="Jumlah simpul yang dibangkitkan: %d" % (jumlah_simpul))
