@@ -208,7 +208,7 @@ class GUI(tk.Tk):
                 #menyelesaikan puzzle
                 jumlah_simpul = self.solver.solve()
                 #menghandle kasus waktu penyelesaian terlalu lama(dinonaktifkan secara default, bisa diaktifkan dengan menghilangkan
-                # tanda # di file TSP15Puzzle.py pada line 14,127,128,129)
+                # tanda # di file TSP15Puzzle.py pada line 15,134,135,136)
                 if(jumlah_simpul==None):
                     self.warning_label['text'] = "Persoalan membutuhkan waktu yang lama untuk diselesaikan! (melebihi 8 menit!)"
                 else:
