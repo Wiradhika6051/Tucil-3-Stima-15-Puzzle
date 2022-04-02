@@ -1,4 +1,3 @@
-import re
 import time
 import copy
 from operator import itemgetter
@@ -7,7 +6,6 @@ from numpy import array_equal
 class TSP15Puzzle:
     def __init__(self,matrix):
         self.matrix = matrix
-        #self.startTime = time.time()*1000 # waktu mulai dalam ms
         self.startTime = None # waktu mulai dalam ms
         self.endTime = None #waktu algoritma selesai
         self.solution = []
@@ -54,12 +52,13 @@ class TSP15Puzzle:
 
     def solve(self):
         #menyelesaikan puzzle dengan algoritma branch and bound
-        #struktur data simpul: simpul = (indeks,parent,isi, cost)->disimpan di atribut kelas
+        #struktur data simpul: simpul = (indeks,parent,isi, cost,hash_value)->disimpan di atribut kelas
         #return (jumlah_simpul_yang_berhasil_dibangkitkan)
         simpul_hidup = []
+        self.solution = []
         #inisialisasi simpul pertama
         i = 0
-        first_node = [i,-1,self.matrix,0]
+        first_node = [i,-1,self.matrix,0,self.hashing(self.matrix)]
         self.simpul.append(first_node)
         jumlah_simpul = 1
         if(self.g(first_node[2])==0):
@@ -76,7 +75,7 @@ class TSP15Puzzle:
         if(idx_kosong//4 > 0 and not found):#bukan di baris pertama
             temp = copy.deepcopy(self.matrix)
             temp[idx_kosong],temp[idx_kosong-4] = temp[idx_kosong-4],temp[idx_kosong]
-            node = [i,0,temp,self.getCost(temp)]
+            node = [i,0,temp,self.getCost(temp),self.hashing(temp)]
             simpul_hidup.append(node)
             self.simpul.append(node)
             i+=1
@@ -89,7 +88,7 @@ class TSP15Puzzle:
         if(idx_kosong%4 != 3 and not found):#bukan di kolom terakhir
             temp = copy.deepcopy(self.matrix)
             temp[idx_kosong],temp[idx_kosong+1] = temp[idx_kosong+1],temp[idx_kosong]
-            node = [i,0,temp,self.getCost(temp)]
+            node = [i,0,temp,self.getCost(temp),self.hashing(temp)]
             simpul_hidup.append(node)
             self.simpul.append(node)
             i+=1
@@ -102,7 +101,7 @@ class TSP15Puzzle:
         if(idx_kosong//4 != 3 and not found):#bukan di baris terakhir
             temp = copy.deepcopy(self.matrix)
             temp[idx_kosong],temp[idx_kosong+4] = temp[idx_kosong+4],temp[idx_kosong]
-            node = [i,0,temp,self.getCost(temp)]
+            node = [i,0,temp,self.getCost(temp),self.hashing(temp)]
             simpul_hidup.append(node) 
             self.simpul.append(node)
             i+=1       
@@ -115,7 +114,7 @@ class TSP15Puzzle:
         if(idx_kosong%4 != 0 and not found):#bukan di kolom pertama
             temp = copy.deepcopy(self.matrix)
             temp[idx_kosong],temp[idx_kosong-1] = temp[idx_kosong-1],temp[idx_kosong]
-            node = [i,0,temp,self.getCost(temp)]
+            node = [i,0,temp,self.getCost(temp),self.hashing(temp)]
             simpul_hidup.append(node) 
             self.simpul.append(node)  
             i+=1   
@@ -143,8 +142,9 @@ class TSP15Puzzle:
                 temp = copy.deepcopy(node[2])
                 temp[idx_kosong],temp[idx_kosong-4] = temp[idx_kosong-4],temp[idx_kosong]
                 jumlah_simpul+=1
-                if self.checkUnique(temp):
-                    temp_node = [i,node[0],temp,self.getCost(temp)]
+                hash_value = self.hashing(temp)
+                if self.checkUnique(hash_value):
+                    temp_node = [i,node[0],temp,self.getCost(temp),hash_value]
                     simpul_hidup.append(temp_node)
                     self.simpul.append(temp_node)
                     i+=1
@@ -153,8 +153,9 @@ class TSP15Puzzle:
                 temp = copy.deepcopy(node[2])
                 temp[idx_kosong],temp[idx_kosong+1] = temp[idx_kosong+1],temp[idx_kosong]
                 jumlah_simpul+=1
-                if self.checkUnique(temp):
-                    temp_node = [i,node[0],temp,self.getCost(temp)]
+                hash_value = self.hashing(temp)
+                if self.checkUnique(hash_value):
+                    temp_node = [i,node[0],temp,self.getCost(temp),hash_value]
                     simpul_hidup.append(temp_node)
                     self.simpul.append(temp_node)
                     i+=1
@@ -163,8 +164,9 @@ class TSP15Puzzle:
                 temp = copy.deepcopy(node[2])
                 temp[idx_kosong],temp[idx_kosong+4] = temp[idx_kosong+4],temp[idx_kosong]
                 jumlah_simpul+=1
-                if self.checkUnique(temp):
-                    temp_node = [i,node[0],temp,self.getCost(temp)]
+                hash_value = self.hashing(temp)
+                if self.checkUnique(hash_value):
+                    temp_node = [i,node[0],temp,self.getCost(temp),hash_value]
                     simpul_hidup.append(temp_node) 
                     self.simpul.append(temp_node)
                     i+=1       
@@ -173,8 +175,9 @@ class TSP15Puzzle:
                 temp = copy.deepcopy(node[2])
                 temp[idx_kosong],temp[idx_kosong-1] = temp[idx_kosong-1],temp[idx_kosong]
                 jumlah_simpul+=1
-                if self.checkUnique(temp):
-                    temp_node = [i,node[0],temp,self.getCost(temp)]
+                hash_value = self.hashing(temp)
+                if self.checkUnique(hash_value):
+                    temp_node = [i,node[0],temp,self.getCost(temp),hash_value]
                     simpul_hidup.append(temp_node) 
                     self.simpul.append(temp_node)  
                     i+=1   
@@ -204,10 +207,16 @@ class TSP15Puzzle:
             print("Langkah "+str(i)+":")
             self.cetakMatrix(self.solution[idx][2])
             i += 1
-    def checkUnique(self,matrix):
-    #memeriksa apakah suatu matrix sudah ada di self.simpul atau belum
+    def checkUniquePakeMatrix(self,matrix):
+    #memeriksa apakah suatu matrix sudah ada di self.simpul atau belum dengan cek manual isi matriks
         for simpul in self.simpul:
             if self.compareMatrix(simpul[2],matrix):
+                return False
+        return True
+    def checkUnique(self,hash_matriks):
+        #memeriksa apakah suatu matrix sudah ada di self.simpul atau belum
+        for simpul in self.simpul:
+            if simpul[4]==hash_matriks:
                 return False
         return True
     def compareMatrix(self,mat1,mat2):
@@ -222,3 +231,10 @@ class TSP15Puzzle:
     def get_solution(self):
         #mendapatkan solusi 15 puzzle
         return self.solution
+    def hashing(self,object):
+        #combine tiap element di object jadi sebuah string
+        string = ""
+        for char in object:
+            string+= "0"
+            string+= str(char)
+        return hash(string)

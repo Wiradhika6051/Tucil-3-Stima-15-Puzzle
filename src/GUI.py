@@ -16,6 +16,7 @@ class GUI(tk.Tk):
         self.filabel = []#daftar label fungsi kurang(i)
         self.solution = None
         self.iteration = 0
+        
 
         title_styles = {"font": ("Trebuchet MS Bold", 16),"foreground":"white","background":"#57536E"}
         input_text_styles =  {"font": ("Trebuchet MS Bold", 13),"foreground":"white","background":"#57536E"} 
@@ -51,6 +52,8 @@ class GUI(tk.Tk):
         self.sigma_label = tk.Label(self.sigma_frame,self.start_matrix_text_styles,text="Nilai dari nilai status reachable(sigma(i)+X): 0",justify="left")
         self.sigma_label.grid(row=0,column=0)
 
+        self.warning_label = tk.Label(self.sigma_frame,self.start_matrix_text_styles,text="",justify="left")
+        self.warning_label.grid(row=1,column=0)
         #frame nilai fungsi kurang(i)
         self.kurang_frame = tk.Frame(self,bg="#57536E",height=600,width=300,borderwidth=5)
         self.kurang_frame.grid(row = 2,column=0,rowspan=3)
@@ -151,6 +154,8 @@ class GUI(tk.Tk):
     def solve(self):
         #menyelesaikan puzzle
         if(self.matriks!=None and self.solver!=None):
+            self.warning_label['text'] = ""
+            self.iteration_label['text'] = "Iterasi Ke-0"
             self.solver.setStartTime()
             #hitung yang kurang(i)
             status_number = 0
@@ -168,15 +173,13 @@ class GUI(tk.Tk):
             self.sigma_label['text'] = "Nilai dari nilai status reachable(sigma(i)+X): "+str(status_number)
             #mengecek status reachable
             if(status_number % 2 != 0):#kalau ganjil maka tidak reachable
-                warning_label = tk.Label(self.sigma_frame,self.start_matrix_text_styles,text="Persoalan tidak bisa diselesaikan!",justify="left")
-                warning_label.grid(row=1,column=0)
+                self.warning_label['text'] = "Persoalan tidak bisa diselesaikan!"
             else:
                 #menyelesaikan puzzle
                 jumlah_simpul = self.solver.solve()
                 #menghandle kasus waktu penyelesaian terlalu lama
                 if(jumlah_simpul==None):
-                    warning_label = tk.Label(self.sigma_frame,self.start_matrix_text_styles,text="Persoalan membutuhkan waktu yang lama untuk diselesaikan! (melebihi 8 menit!)",justify="left")
-                    warning_label.grid(row=1,column=0)
+                    self.warning_label['text'] = "Persoalan membutuhkan waktu yang lama untuk diselesaikan! (melebihi 8 menit!)"
                 else:
                     #menampilkan waktu eksekusi program
                     time_elapsed = self.solver.getElapsedTime()
@@ -194,7 +197,10 @@ class GUI(tk.Tk):
                         else:
                             self.endMatrixCell[k]['text'] = str(initial_action[2][k])
                     self.prev_button['state'] = "disabled"
-                    self.next_button['state'] = "active"
+                    if(len(self.solution)==1):
+                        self.next_button['state'] = "disabled"
+                    else:
+                        self.next_button['state'] = "active"
     def next(self):
         #menuju move selanjutnya
         if(self.solution!=None):
@@ -209,6 +215,8 @@ class GUI(tk.Tk):
                         self.endMatrixCell[k]['text'] = str(action[2][k])
                 if(self.iteration==len(self.solution)-1):
                     self.next_button['state'] = "disabled"
+                    if(len(self.solution)>1):
+                        self.prev_button['state'] = "active"
                 else:
                     self.next_button['state'] = "active"
                     self.prev_button['state'] = "active"
@@ -226,6 +234,7 @@ class GUI(tk.Tk):
                         self.endMatrixCell[k]['text'] = str(action[2][k])
                 if(self.iteration==0):
                     self.prev_button['state'] = "disabled"
+                    self.next_button['state'] = "active"
                 else:
                     self.prev_button['state'] = "active"
                     self.next_button['state'] = "active"
