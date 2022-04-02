@@ -11,7 +11,7 @@ class TSP15Puzzle:
         self.solution = []
         self.endNode = None
         self.simpul = []#simpul yang sudah pernah dibangkitkan
-        self.MAXTIME = 8*60*1000 #waktu maksimum komputasi (dalam ms)
+        #self.MAXTIME = 8*60*1000 #waktu maksimum komputasi (dalam ms)
     def get_matrix(self):
         return self.matrix
     def getElapsedTime(self):
@@ -124,13 +124,12 @@ class TSP15Puzzle:
                 #solusi ketemu
                 found = True
         while(simpul_hidup and not found):#selama masih ada simpul hidup
-            temp_time = time.time()*1000
-            if(temp_time-self.startTime>self.MAXTIME):
-                return None
+            #temp_time = time.time()*1000
+            #if(temp_time-self.startTime>self.MAXTIME):
+            #    return None
             temp = copy.deepcopy(simpul_hidup)
             simpul_hidup = sorted(temp,key=itemgetter(3))#urutkan dari cost yang terkecil
             node = simpul_hidup.pop(0)
-            time.sleep(1)
             if(self.g(node[2])==0):
                 self.endNode = copy.deepcopy(node)
                 #solusi ketemu
