@@ -4,6 +4,7 @@ from TSP15Puzzle import TSP15Puzzle
 import random
 import os
 import time
+import threading
 #sumber template GUI:https://gist.github.com/RamonWill/0422b061464097a7a0162f33e4c13a2e
 class GUI(tk.Tk):
     def __init__(self, *args, **kwargs):
@@ -69,7 +70,7 @@ class GUI(tk.Tk):
         kurang_label_3.grid(row=2,column=0,columnspan=2)
 
         #tombol solve
-        solve_button = tk.Button(self,text="SOLVE",command=lambda:self.solve())
+        solve_button = tk.Button(self,text="SOLVE",command=lambda:threading.Thread(target=self.solve()).start())
         solve_button.grid(row=2,column=1,pady=5)
        
 

@@ -36,7 +36,14 @@ class TSP15Puzzle:
         return count
     def getCost(self, tempMatrix):
         #mendapatkan cost suatu cabang
-        cost = 1    #f(i)
+        #cari f(i)
+        #langsung cari g(i)
+        cost = 0    
+        #while(idx_parent!=0):#ulangi sampai nyampe ke root
+        #    #idx_parent = self.simpul[self.getIDX(idx_parent,self.simpul)][1]
+        #    idx_parent = self.simpul[idx_parent][1]
+        #    cost+=1
+        #g(i)
         for i in range(16):
             if(tempMatrix[i] != 16 and tempMatrix[i]!=i+1):
                 cost+=1
@@ -52,13 +59,13 @@ class TSP15Puzzle:
 
     def solve(self):
         #menyelesaikan puzzle dengan algoritma branch and bound
-        #struktur data simpul: simpul = (indeks,parent,isi, cost,hash_value)->disimpan di atribut kelas
+        #struktur data simpul: simpul = (indeks,parent,isi, cost,hash_value,kedalaman)->disimpan di atribut kelas
         #return (jumlah_simpul_yang_berhasil_dibangkitkan)
         simpul_hidup = []
         self.solution = []
         #inisialisasi simpul pertama
         i = 0
-        first_node = [i,-1,self.matrix,0,self.hashing(self.matrix)]
+        first_node = [i,-1,self.matrix,0,self.hashing(self.matrix),0]
         self.simpul.append(first_node)
         jumlah_simpul = 1
         if(self.g(first_node[2])==0):
@@ -75,7 +82,7 @@ class TSP15Puzzle:
         if(idx_kosong//4 > 0 and not found):#bukan di baris pertama
             temp = copy.deepcopy(self.matrix)
             temp[idx_kosong],temp[idx_kosong-4] = temp[idx_kosong-4],temp[idx_kosong]
-            node = [i,0,temp,self.getCost(temp),self.hashing(temp)]
+            node = [i,0,temp,1+self.getCost(temp),self.hashing(temp),1]
             simpul_hidup.append(node)
             self.simpul.append(node)
             i+=1
@@ -88,7 +95,7 @@ class TSP15Puzzle:
         if(idx_kosong%4 != 3 and not found):#bukan di kolom terakhir
             temp = copy.deepcopy(self.matrix)
             temp[idx_kosong],temp[idx_kosong+1] = temp[idx_kosong+1],temp[idx_kosong]
-            node = [i,0,temp,self.getCost(temp),self.hashing(temp)]
+            node = [i,0,temp,1+self.getCost(temp),self.hashing(temp),1]
             simpul_hidup.append(node)
             self.simpul.append(node)
             i+=1
@@ -101,7 +108,7 @@ class TSP15Puzzle:
         if(idx_kosong//4 != 3 and not found):#bukan di baris terakhir
             temp = copy.deepcopy(self.matrix)
             temp[idx_kosong],temp[idx_kosong+4] = temp[idx_kosong+4],temp[idx_kosong]
-            node = [i,0,temp,self.getCost(temp),self.hashing(temp)]
+            node = [i,0,temp,1+self.getCost(temp),self.hashing(temp),1]
             simpul_hidup.append(node) 
             self.simpul.append(node)
             i+=1       
@@ -114,7 +121,7 @@ class TSP15Puzzle:
         if(idx_kosong%4 != 0 and not found):#bukan di kolom pertama
             temp = copy.deepcopy(self.matrix)
             temp[idx_kosong],temp[idx_kosong-1] = temp[idx_kosong-1],temp[idx_kosong]
-            node = [i,0,temp,self.getCost(temp),self.hashing(temp)]
+            node = [i,0,temp,1+self.getCost(temp),self.hashing(temp),1]
             simpul_hidup.append(node) 
             self.simpul.append(node)  
             i+=1   
@@ -136,6 +143,7 @@ class TSP15Puzzle:
                 break
             #generasikan simpul lain
             idx_kosong = node[2].index(16)
+            f_i = self.simpul[node[0]][5]+1
             # 1->ke atas
             if(idx_kosong//4 > 0):#bukan di baris pertama
                 temp = copy.deepcopy(node[2])
@@ -143,7 +151,9 @@ class TSP15Puzzle:
                 jumlah_simpul+=1
                 hash_value = self.hashing(temp)
                 if self.checkUnique(hash_value):
-                    temp_node = [i,node[0],temp,self.getCost(temp),hash_value]
+                    #dapatkan kedalaman matriks atasannya
+                    #f_i = self.simpul[node[0]][5]+1
+                    temp_node = [i,node[0],temp,f_i+self.getCost(temp),hash_value,f_i]
                     simpul_hidup.append(temp_node)
                     self.simpul.append(temp_node)
                     i+=1
@@ -154,7 +164,8 @@ class TSP15Puzzle:
                 jumlah_simpul+=1
                 hash_value = self.hashing(temp)
                 if self.checkUnique(hash_value):
-                    temp_node = [i,node[0],temp,self.getCost(temp),hash_value]
+                    #f_i = self.simpul[node[0]][5]+1
+                    temp_node = [i,node[0],temp,f_i+self.getCost(temp),hash_value,f_i]
                     simpul_hidup.append(temp_node)
                     self.simpul.append(temp_node)
                     i+=1
@@ -165,7 +176,8 @@ class TSP15Puzzle:
                 jumlah_simpul+=1
                 hash_value = self.hashing(temp)
                 if self.checkUnique(hash_value):
-                    temp_node = [i,node[0],temp,self.getCost(temp),hash_value]
+                    #f_i = self.simpul[node[0]][5]+1
+                    temp_node = [i,node[0],temp,f_i+self.getCost(temp),hash_value,f_i]
                     simpul_hidup.append(temp_node) 
                     self.simpul.append(temp_node)
                     i+=1       
@@ -176,7 +188,8 @@ class TSP15Puzzle:
                 jumlah_simpul+=1
                 hash_value = self.hashing(temp)
                 if self.checkUnique(hash_value):
-                    temp_node = [i,node[0],temp,self.getCost(temp),hash_value]
+                    #f_i = self.simpul[node[0]][5]+1
+                    temp_node = [i,node[0],temp,f_i+self.getCost(temp),hash_value,f_i]
                     simpul_hidup.append(temp_node) 
                     self.simpul.append(temp_node)  
                     i+=1   
