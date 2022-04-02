@@ -16,7 +16,8 @@ class GUI(tk.Tk):
         self.filabel = []#daftar label fungsi kurang(i)
         self.solution = None
         self.iteration = 0
-        
+        self.time_label = None
+        self.node_label = None
 
         title_styles = {"font": ("Trebuchet MS Bold", 16),"foreground":"white","background":"#57536E"}
         input_text_styles =  {"font": ("Trebuchet MS Bold", 13),"foreground":"white","background":"#57536E"} 
@@ -131,6 +132,20 @@ class GUI(tk.Tk):
                 self.startMatrixCell[k]['text'] = " "
             else:
                 self.startMatrixCell[k]['text'] = str(self.matriks[k])
+        if(len(self.filabel)>0):
+            for i in range(len(self.filabel)):
+                self.filabel[i]['text'] = ""
+        if(self.time_label!=None):
+            self.time_label['text'] = ""
+        if(self.node_label!=None):
+            self.node_label['text'] = ""
+        self.sigma_label['text'] = "Nilai dari nilai status reachable(sigma(i)+X): 0"
+        for i in range(16):
+            self.endMatrixCell[i]['text'] = " "
+        self.warning_label['text'] = ""
+        self.iteration_label['text'] = "Iterasi Ke-0"
+        self.next_button['state'] = "disabled"
+        self.prev_button['state'] = "disabled"
     def getMatrixFromFile(self):
         #memilih file input dari file
         filename = filedialog.askopenfilename(initialdir=os.getcwd())
@@ -150,7 +165,21 @@ class GUI(tk.Tk):
                 if(self.matriks[k]==16):
                     self.startMatrixCell[k]['text'] = " "
                 else:
-                    self.startMatrixCell[k]['text'] = str(self.matriks[k])       
+                    self.startMatrixCell[k]['text'] = str(self.matriks[k])
+            if(len(self.filabel)>0):
+                for i in range(len(self.filabel)):
+                    self.filabel[i]['text'] = ""
+            if(self.time_label!=None):
+                self.time_label['text'] = ""
+            if(self.node_label!=None):
+                self.node_label['text'] = ""    
+            self.sigma_label['text'] = "Nilai dari nilai status reachable(sigma(i)+X): 0"   
+            for i in range(16):
+                self.endMatrixCell[i]['text'] = " "
+            self.warning_label['text'] = ""
+            self.iteration_label['text'] = "Iterasi Ke-0"
+            self.next_button['state'] = "disabled"
+            self.prev_button['state'] = "disabled"
     def solve(self):
         #menyelesaikan puzzle
         if(self.matriks!=None and self.solver!=None):
@@ -183,11 +212,11 @@ class GUI(tk.Tk):
                 else:
                     #menampilkan waktu eksekusi program
                     time_elapsed = self.solver.getElapsedTime()
-                    time_label = tk.Label(self.sigma_frame,self.start_matrix_text_styles,text="Waktu eksekusi program: %s ms" % (time_elapsed),justify="left")
-                    time_label.grid(row=1,column=0)
+                    self.time_label = tk.Label(self.sigma_frame,self.start_matrix_text_styles,text="Waktu eksekusi program: %s ms" % (time_elapsed),justify="left")
+                    self.time_label.grid(row=1,column=0)
                     #menampilkan jumlah simpul yang dibangkitkan
-                    node_label = tk.Label(self.sigma_frame,self.start_matrix_text_styles,text="Jumlah simpul yang dibangkitkan: %d" % (jumlah_simpul))
-                    node_label.grid(row=2,column=0)
+                    self.node_label = tk.Label(self.sigma_frame,self.start_matrix_text_styles,text="Jumlah simpul yang dibangkitkan: %d" % (jumlah_simpul))
+                    self.node_label.grid(row=2,column=0)
                     self.solution = self.solver.get_solution()
                     self.iteration = 0
                     initial_action = self.solution[self.iteration]
