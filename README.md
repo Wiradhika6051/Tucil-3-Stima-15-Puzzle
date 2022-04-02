@@ -16,10 +16,10 @@ Sebuah program untuk menyelesaikan permainan 15 Puzzle
 
 # Deskripsi Singkat
 15 Puzzle adalah sebuah permainan dimana terdapat sebuah matriks 4x4 yang berisi angka 1-15 dan sebuah sel kosong yang tersusun secara acak. Tujuan permainan ini adalah menggerakkan sel-sel disekitar sel kosong agar terbentuk susunan akhir seperti berikut:
-1  2  3  4
-5  6  7  8
-9  10 11 12
-13 14 15 
+-`1  2  3  4`
+-`5  6  7  8`
+-`9  10 11 12`
+-`13 14 15   `
 
 Program ini adalah sebuah program dalam bahasa Python yang mencoba menyelesaikan puzzle ini dengan membangkitkan node-node dengan cara "menggerakkan" kotak kosong dan menghitung costnya. Jika seudah ditemukan solusi, maka simpul aktif yang costnya lebih besar dari cost solusi akan dipangkas.
 
