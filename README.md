@@ -54,3 +54,9 @@ Program ini adalah sebuah program dalam bahasa Python yang mencoba menyelesaikan
 <br/>7 9 16 3
 <br/>13 14 15 12
  - Di repo ini, terdapat branch bernama **cli** yang berisi program yang sama namun dalam format CLI (command line interface). Algoritma yang digunakan sama dengan yang di branch ini. Saya menyertakannya karena awalnya saya membuat program ini dalam CLI untuk testing kemudian switch ke GUI. Karena sayang jika dihapus, saya masukkan program CLI nya ke branch yang berbeda.
+- Di daftar nilai KURANG(i), saya mengikuti contoh yang ada di ppt, sehingga nilai i merupakan nilai dari 1-15 dan bukan indeks ubin. CONTOH:
+<br/>5 2 8 10
+<br/>1 11 6 4
+<br/>7 9 16 3
+<br/>13 14 15 12
+posisi angka 3 ada di posisi ke-12,nilai KURANG(3) = 0, karena setelah posisi angka 3, tidak ada bilangan yang lebih kecil dari 3. 
