@@ -16,10 +16,10 @@ Sebuah program untuk menyelesaikan permainan 15 Puzzle
 
 # Deskripsi Singkat
 15 Puzzle adalah sebuah permainan dimana terdapat sebuah matriks 4x4 yang berisi angka 1-15 dan sebuah sel kosong yang tersusun secara acak. Tujuan permainan ini adalah menggerakkan sel-sel disekitar sel kosong agar terbentuk susunan akhir seperti berikut:
--`1  2  3  4`
--`5  6  7  8`
--`9  10 11 12`
--`13 14 15   `
+<br/>1  2  3  4
+<br/>5  6  7  8
+<br/>9  10 11 12
+<br/>13 14 15   `
 
 Program ini adalah sebuah program dalam bahasa Python yang mencoba menyelesaikan puzzle ini dengan membangkitkan node-node dengan cara "menggerakkan" kotak kosong dan menghitung costnya. Jika seudah ditemukan solusi, maka simpul aktif yang costnya lebih besar dari cost solusi akan dipangkas.
 
@@ -49,10 +49,8 @@ Program ini adalah sebuah program dalam bahasa Python yang mencoba menyelesaikan
  - Jika program not responding, maka ditunggu saja mengingat algoritma ini cukup berat untuk puzzle yang memerlukan move diatas 20 moves.
  ## Tambahan
  - Format penulisan input berupa matriks 4x4 dengan tiap elemen dipisahkan spasi dan untuk sel kosong, direpresentasikan sebagai nomor 16. Contoh:
-`
-5 2 8 10
-1 11 6 4
-7 9 16 3
-13 14 15 12
-`
+<br/>5 2 8 10
+<br/>1 11 6 4
+<br/>7 9 16 3
+<br/>13 14 15 12
  - Di repo ini, terdapat branch bernama **cli** yang berisi program yang sama namun dalam format CLI (command line interface). Algoritma yang digunakan sama dengan yang di branch ini. Saya menyertakannya karena awalnya saya membuat program ini dalam CLI untuk testing kemudian switch ke GUI. Karena sayang jika dihapus, saya masukkan program CLI nya ke branch yang berbeda.
