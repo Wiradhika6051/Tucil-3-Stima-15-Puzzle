@@ -19,7 +19,7 @@ Sebuah program untuk menyelesaikan permainan 15 Puzzle
 <br/>1  2  3  4
 <br/>5  6  7  8
 <br/>9  10 11 12
-<br/>13 14 15   `
+<br/>13 14 15   
 
 Program ini adalah sebuah program dalam bahasa Python yang mencoba menyelesaikan puzzle ini dengan membangkitkan node-node dengan cara "menggerakkan" kotak kosong dan menghitung costnya. Jika seudah ditemukan solusi, maka simpul aktif yang costnya lebih besar dari cost solusi akan dipangkas.
 
